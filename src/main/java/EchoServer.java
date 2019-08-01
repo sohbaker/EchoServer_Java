@@ -19,4 +19,12 @@ public class EchoServer {
             output.println(ex);
         }
     }
+
+    public void stop() {
+        try {
+            this.server.close();
+        } catch (IOException ex) {
+            output.println(ex);
+        }
+    }
 }

@@ -13,10 +13,14 @@ public class EchoServerTest {
         server = new EchoServer(port, new PrintStream(outputContent));
     }
 
+    @After
+    public void closeServerSocket() {
+        server.stop();
+    }
+
     @Test
     public void startsAServerSocket() {
         server.start(port);
         assertThat(outputContent.toString(), containsString("" + port));
     }
-
 }
