@@ -1,10 +1,8 @@
 import org.junit.*;
 import java.io.*;
 import java.net.Socket;
-
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class EchoServerTest {
     private EchoServer server;
@@ -28,12 +26,24 @@ public class EchoServerTest {
     }
 
     @Test
-    public void serverSocketAcceptsAConnection() {
+    public void openServerSocketAcceptsAConnection() {
         server.start();
         try (Socket ableToConnect = new Socket("localhost", port)) {
-            assertTrue("Accepts connection when server is listening", ableToConnect.isConnected());
+            assertTrue("Accepts connection when server socket is listening", ableToConnect.isConnected());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void closedServerSocketDoesNotAllowAConnection() {
+        server.start();
+        server.stop();
+        try {
+            new Socket("localhost", port);
+            fail("Cannot connect if server socket is not listening");
+        } catch (Exception ex) {
+            assertThat(ex.getMessage(), containsString("Connection refused"));
         }
     }
 }
