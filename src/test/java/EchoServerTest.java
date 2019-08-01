@@ -1,7 +1,10 @@
 import org.junit.*;
 import java.io.*;
+import java.net.Socket;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class EchoServerTest {
     private EchoServer server;
@@ -20,7 +23,17 @@ public class EchoServerTest {
 
     @Test
     public void startsAServerSocket() {
-        server.start(port);
+        server.start();
         assertThat(outputContent.toString(), containsString("" + port));
+    }
+
+    @Test
+    public void serverSocketAcceptsAConnection() {
+        server.start();
+        try (Socket ableToConnect = new Socket("localhost", port)) {
+            assertTrue("Accepts connection when server is listening", ableToConnect.isConnected());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
