@@ -20,6 +20,16 @@ public class EchoServer {
         }
     }
 
+    public String acceptRequestFromAClient(Socket clientSocket) {
+        String request = "";
+        try {
+          request = new BufferedReader((new InputStreamReader(clientSocket.getInputStream()))).readLine();
+        } catch (Exception ex) {
+            output.println(ex);
+        }
+        return request;
+    }
+
     public void stop() {
         try {
             this.serverSocket.close();

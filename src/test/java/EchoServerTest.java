@@ -12,6 +12,7 @@ public class EchoServerTest {
     @Before
     public void setUpServer() {
         server = new EchoServer(port, new PrintStream(outputContent));
+        server.start();
     }
 
     @After
@@ -21,13 +22,11 @@ public class EchoServerTest {
 
     @Test
     public void startsAServerSocket() {
-        server.start();
         assertThat(outputContent.toString(), containsString("" + port));
     }
 
     @Test
     public void openServerSocketAcceptsAConnection() {
-        server.start();
         try (Socket ableToConnect = new Socket("localhost", port)) {
             assertTrue("Accepts connection when server socket is listening", ableToConnect.isConnected());
         } catch (Exception ex) {
@@ -37,7 +36,6 @@ public class EchoServerTest {
 
     @Test
     public void closedServerSocketDoesNotAllowAConnection() {
-        server.start();
         server.stop();
         try {
             new Socket("localhost", port);
@@ -45,5 +43,12 @@ public class EchoServerTest {
         } catch (Exception ex) {
             assertThat(ex.getMessage(), containsString("Connection refused"));
         }
+    }
+
+    @Test
+    public void receivesARequestFromAClientSocket() {
+        MockClientSocket mockClientSocket = new MockClientSocket();
+        String request = server.acceptRequestFromAClient(mockClientSocket);
+        assertEquals("GET / HTTP/1.1", request);
     }
 }
