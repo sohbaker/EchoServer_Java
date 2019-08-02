@@ -19,4 +19,10 @@ public class ClientMessageHandlerTest {
     public void receivesAnInput() {
         assertEquals(messageHandler.readInput(), fakeInput);
     }
+
+    @Test
+    public void outputsTheClientMessage() {
+        messageHandler.sendOutput(fakeInput);
+        assertEquals(outputStream.toString(), fakeInput+"\n");
+    }
 }

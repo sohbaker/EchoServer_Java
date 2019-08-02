@@ -16,4 +16,8 @@ public class ClientMessageHandler {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendOutput(String input) {
+        output.println(input);
+    }
 }
