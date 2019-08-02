@@ -3,29 +3,22 @@ import java.net.*;
 
 public class EchoServer {
     int port;
-    PrintStream output;
     ServerSocket serverSocket;
+    ServerMessageHandler serverMessageHandler;
 
-    public EchoServer(int portNumber, PrintStream output) {
+    public EchoServer(int portNumber, ServerMessageHandler serverMessageHandler, ServerSocket serverSocket) {
         this.port = portNumber;
-        this.output = output;
-    }
-
-    public void start() {
-        try {
-            this.serverSocket = new ServerSocket(port);
-            output.println("--Server started. Listening on port " + port + "--");
-        } catch (IOException ex) {
-            output.println(ex);
-        }
+        this.serverMessageHandler = serverMessageHandler;
+        this.serverSocket = serverSocket;
     }
 
     public void stop() {
         try {
             this.serverSocket.close();
-            output.println("--Server successfully shutdown--");
+            serverMessageHandler.confirmCloseServer();
         } catch (IOException ex) {
-            output.println(ex);
+            serverMessageHandler.printExceptionError(ex);
         }
     }
 }
+q
