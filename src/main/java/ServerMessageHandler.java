@@ -20,4 +20,8 @@ public class ServerMessageHandler {
     public void confirmCloseClientConnection() {
         output.println("--Closing connection with client--");
     }
+
+    public void confirmCloseServer() {
+        output.println("--Closing down server--");
+    }
 }

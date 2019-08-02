@@ -33,4 +33,10 @@ public class ServerMessageHandlerTest {
         messageHandler.confirmCloseClientConnection();
         assertThat(outputStream.toString(), containsString("Closing connection"));
     }
+
+    @Test
+    public void confirmServerClosed() {
+        messageHandler.confirmCloseServer();
+        assertThat(outputStream.toString(), containsString("Closing down server"));
+    }
 }
