@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ServerMessageHandler {
@@ -23,5 +24,9 @@ public class ServerMessageHandler {
 
     public void confirmCloseServer() {
         output.println("--Closing down server--");
+    }
+
+    public void printExceptionError(IOException errorMessage) {
+        output.println(errorMessage);
     }
 }

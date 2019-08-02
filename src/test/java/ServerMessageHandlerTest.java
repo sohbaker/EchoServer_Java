@@ -1,8 +1,6 @@
 import org.junit.*;
 import java.io.*;
-
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class ServerMessageHandlerTest {
@@ -38,5 +36,13 @@ public class ServerMessageHandlerTest {
     public void confirmServerClosed() {
         messageHandler.confirmCloseServer();
         assertThat(outputStream.toString(), containsString("Closing down server"));
+    }
+
+    @Test
+    public void printsExceptionErrors() {
+        String exceptionMessage = "exception thrown";
+        IOException ioException = new IOException(exceptionMessage);
+        messageHandler.printExceptionError(ioException);
+        assertThat(outputStream.toString(), containsString(exceptionMessage));
     }
 }
