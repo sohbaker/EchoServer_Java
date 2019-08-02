@@ -16,4 +16,8 @@ public class ServerMessageHandler {
     public void confirmAcceptClientConnection() {
         output.println("--Accepted connection--");
     }
+
+    public void confirmCloseClientConnection() {
+        output.println("--Closing connection with client--");
+    }
 }

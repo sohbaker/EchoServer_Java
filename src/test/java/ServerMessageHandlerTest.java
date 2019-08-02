@@ -27,4 +27,10 @@ public class ServerMessageHandlerTest {
         messageHandler.confirmAcceptClientConnection();
         assertThat(outputStream.toString(), containsString("Accepted connection"));
     }
+
+    @Test
+    public void confirmsConnectionWithClientIsClosed() {
+        messageHandler.confirmCloseClientConnection();
+        assertThat(outputStream.toString(), containsString("Closing connection"));
+    }
 }
