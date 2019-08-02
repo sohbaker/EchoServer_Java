@@ -1,7 +1,5 @@
 import org.junit.*;
 import java.io.*;
-import java.net.*;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 public class EchoServerTest {
@@ -31,13 +29,7 @@ public class EchoServerTest {
     }
 
     @Test
-    public void closedServerSocketDoesNotAllowAConnection() {
-        server.stop();
-        try {
-            new Socket("localhost", port);
-            fail("Cannot connect if server socket is not listening");
-        } catch (Exception ex) {
-            assertThat(ex.getMessage(), containsString("Connection refused"));
-        }
+    public void echoesAMessageFromTheClientBackToTheClient() {
+
     }
 }

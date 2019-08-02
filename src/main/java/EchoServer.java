@@ -5,32 +5,62 @@ public class EchoServer {
     int port;
     ServerSocket serverSocket;
     ServerMessageHandler serverMessageHandler;
-    ClientMessageHandler clientMessageHandler;
+    BufferedReader clientIn;
+    PrintWriter clientOut;
+    String exitWord;
 
-    public EchoServer(int portNumber, ServerMessageHandler serverMessageHandler, ServerSocket serverSocket) {
+    public EchoServer(int portNumber, ServerMessageHandler serverMessageHandler, ServerSocket serverSocket, String exitWord) {
         this.port = portNumber;
         this.serverMessageHandler = serverMessageHandler;
         this.serverSocket = serverSocket;
+        this.exitWord = exitWord;
     }
 
     public void listen() {
         try {
             Socket clientSocket = this.serverSocket.accept();
-            BufferedReader clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter clientOut = new PrintWriter(clientSocket.getOutputStream());
-            clientMessageHandler = new ClientMessageHandler(clientIn, clientOut, "bye");
-            clientMessageHandler.run();
+            serverMessageHandler.confirmAcceptClientConnection();
+            clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            clientOut = new PrintWriter(clientSocket.getOutputStream(), true);
+            run();
         } catch (IOException ex) {
             serverMessageHandler.printExceptionError(ex);
         }
     }
 
+    public void run() {
+        while (true) {
+            String message = readInput();
+            if (noMoreMessagesFromClient(message)) {
+                stop();
+                break;
+            }
+            clientOut.println(response(message));
+        }
+    }
+
     public void stop() {
         try {
-            this.serverSocket.close();
             serverMessageHandler.confirmCloseServer();
+            this.serverSocket.close();
         } catch (IOException ex) {
             serverMessageHandler.printExceptionError(ex);
         }
+    }
+
+    private String readInput() {
+        try {
+            return clientIn.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean noMoreMessagesFromClient(String message) {
+        return message.equalsIgnoreCase(this.exitWord) || message == null;
+    }
+
+    private String response(String incomingMessage) {
+        return incomingMessage;
     }
 }
