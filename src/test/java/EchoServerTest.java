@@ -26,11 +26,8 @@ public class EchoServerTest {
 
     @Test
     public void openServerSocketAcceptsAConnection() {
-        try (Socket ableToConnect = new Socket("localhost", port)) {
-            assertTrue("Accepts connection when server socket is listening", ableToConnect.isConnected());
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        server.listen();
+        assertTrue(fakeServerSocket.wasAcceptCalled());
     }
 
     @Test
