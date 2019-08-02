@@ -22,4 +22,9 @@ public class ServerMessageHandlerTest {
         assertThat(outputStream.toString(), containsString("" + port));
     }
 
+    @Test
+    public void confirmsClientConnectionIsAccepted() {
+        messageHandler.confirmAcceptClientConnection();
+        assertThat(outputStream.toString(), containsString("Accepted connection"));
+    }
 }

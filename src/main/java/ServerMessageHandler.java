@@ -12,4 +12,8 @@ public class ServerMessageHandler {
     public void confirmServerStarted() {
         output.println("--Server started on port: " + port + "--");
     }
+
+    public void confirmAcceptClientConnection() {
+        output.println("--Accepted connection--");
+    }
 }
