@@ -3,10 +3,10 @@ import java.io.*;
 import static org.junit.Assert.*;
 
 public class ClientMessageHandlerTest {
-    private ClientMessageHandler messageHandler;
     private String fakeInput = "hello";
     private StringReader inputStream = new StringReader(fakeInput);
     private StringWriter outputStream = new StringWriter();
+    private ClientMessageHandler messageHandler;
 
     @Before
     public void createHandler() {

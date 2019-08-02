@@ -4,9 +4,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class ServerMessageHandlerTest {
-    private ServerMessageHandler messageHandler;
     private int port = 4321;
     private StringWriter outputStream = new StringWriter();
+    private ServerMessageHandler messageHandler;
 
     @Before
     public void createHandler() {
