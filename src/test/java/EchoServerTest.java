@@ -33,4 +33,15 @@ public class EchoServerTest {
         server.listen();
         assertThat(clientOutputStream.toString(), containsString("hello"));
     }
+
+    @Test
+    public void socketClosesWhenClientEntersExitWord() throws IOException {
+        ByteArrayInputStream clientInput = new ByteArrayInputStream(("hello\nbye").getBytes());
+        FakeClientSocket fakeClientSocket = new FakeClientSocket(clientInput, clientOutputStream);
+        FakeServerSocket fakeServerSocket = new FakeServerSocket(fakeClientSocket);
+        server = new EchoServer(messageHandler, fakeServerSocket, exitWord);
+
+        server.listen();
+        assertTrue(fakeServerSocket.isClosed());
+    }
 }
