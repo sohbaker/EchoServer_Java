@@ -24,13 +24,13 @@ public class EchoServerTest {
 
     @Test
     public void openServerSocketAcceptsAConnection() {
-        server.listen();
+        server.listenForConnections();
         assertTrue(fakeServerSocket.wasAcceptCalled());
     }
 
     @Test
     public void echoesAMessageFromTheClientBackToTheClient() {
-        server.listen();
+        server.listenForConnections();
         assertThat(clientOutputStream.toString(), containsString("hello"));
     }
 
@@ -41,7 +41,7 @@ public class EchoServerTest {
         FakeServerSocket fakeServerSocket = new FakeServerSocket(fakeClientSocket);
         server = new EchoServer(messageHandler, fakeServerSocket, exitWord);
 
-        server.listen();
+        server.listenForConnections();
         assertTrue(fakeServerSocket.isClosed());
     }
 }
