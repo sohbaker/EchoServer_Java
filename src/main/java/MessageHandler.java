@@ -1,11 +1,11 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class ServerMessageHandler {
+public class MessageHandler {
     private PrintWriter output;
     private int port;
 
-    public ServerMessageHandler(PrintWriter output, int port){
+    public MessageHandler(PrintWriter output, int port){
         this.output = output;
         this.port = port;
     }

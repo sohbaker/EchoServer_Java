@@ -3,15 +3,15 @@ import java.io.*;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
-public class ServerMessageHandlerTest {
+public class MessageHandlerTest {
     private int port = 4321;
     private StringWriter outputStream = new StringWriter();
-    private ServerMessageHandler messageHandler;
+    private MessageHandler messageHandler;
 
     @Before
     public void createHandler() {
         PrintWriter output = new PrintWriter(outputStream);
-        messageHandler = new ServerMessageHandler(output, port);
+        messageHandler = new MessageHandler(output, port);
     }
 
     @Test

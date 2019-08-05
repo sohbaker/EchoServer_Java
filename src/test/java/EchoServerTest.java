@@ -6,15 +6,15 @@ public class EchoServerTest {
     private EchoServer server;
     private int port = 3000;
     private FakeServerSocket fakeServerSocket;
-    private ServerMessageHandler serverMessageHandler;
+    private MessageHandler messageHandler;
     private StringWriter outputStream = new StringWriter();
 
     @Before
     public void setUp() throws IOException {
         PrintWriter output = new PrintWriter(outputStream);
-        serverMessageHandler = new ServerMessageHandler(output, port);
+        messageHandler = new MessageHandler(output, port);
         fakeServerSocket = new FakeServerSocket(port);
-        server = new EchoServer(port, serverMessageHandler, fakeServerSocket);
+        server = new EchoServer(port, messageHandler, fakeServerSocket);
     }
 
     @After
