@@ -34,7 +34,7 @@ public class EchoServer {
                 stop();
                 break;
             }
-            clientOutputStream.println(message);
+            clientOutputStream.println(">> " + message);
         }
     }
 
