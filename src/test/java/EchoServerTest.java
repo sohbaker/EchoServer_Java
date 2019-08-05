@@ -30,6 +30,12 @@ public class EchoServerTest {
 
     @Test
     public void echoesAMessageFromTheClientBackToTheClient() {
+    }
 
+    @Test
+    public void receivesARequestFromAClientSocket() {
+        MockClientSocket mockClientSocket = new MockClientSocket();
+        String request = server.acceptRequestFromAClient(mockClientSocket);
+        assertEquals("GET / HTTP/1.1", request);
     }
 }
