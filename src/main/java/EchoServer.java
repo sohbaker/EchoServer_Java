@@ -15,30 +15,40 @@ public class EchoServer {
         this.exitWord = exitWord;
     }
 
-    public void listen() {
+    public void listenForConnections() {
         try {
             clientSocket = serverSocket.accept();
             messageHandler.confirmAcceptClientConnection();
-            clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
-            run();
+            setUpClientIOStreams();
+            echo();
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
     }
 
-    private void run() {
+    private void echo() {
         while (true) {
-            String message = readInput();
-            if (noMoreMessagesFromClient(message)) {
-                stop();
+            String inputLine = receiveData();
+            if (noMoreData(inputLine)) {
+                close();
                 break;
             }
-            clientOutputStream.println(message);
+            clientOutputStream.println(">> " + inputLine);
         }
     }
 
-    private String readInput() {
+    private void close() {
+        try {
+            closeClientConnection();
+            messageHandler.confirmCloseClientConnection();
+            messageHandler.confirmCloseServer();
+            serverSocket.close();
+        } catch (IOException ex) {
+            messageHandler.printExceptionError(ex);
+        }
+    }
+
+    private String receiveData() {
         try {
             return clientInputStream.readLine();
         } catch (IOException e) {
@@ -46,18 +56,24 @@ public class EchoServer {
         }
     }
 
-    private boolean noMoreMessagesFromClient(String message) {
+    private boolean noMoreData(String message) {
         return message == null || message.equalsIgnoreCase(exitWord);
     }
 
-    private void stop() {
+    private void setUpClientIOStreams() {
+        try {
+            clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
+        } catch (IOException ex) {
+            messageHandler.printExceptionError(ex);
+        }
+    }
+
+    private void closeClientConnection() {
         try {
             clientInputStream.close();
             clientOutputStream.close();
             clientSocket.close();
-            messageHandler.confirmCloseClientConnection();
-            messageHandler.confirmCloseServer();
-            serverSocket.close();
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
