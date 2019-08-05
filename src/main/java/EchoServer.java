@@ -2,16 +2,16 @@ import java.io.*;
 import java.net.*;
 
 public class EchoServer {
-    int port;
-    ServerSocket serverSocket;
-    ServerMessageHandler serverMessageHandler;
-    BufferedReader clientIn;
-    PrintWriter clientOut;
-    String exitWord;
+    private int port;
+    private ServerSocket serverSocket;
+    private MessageHandler messageHandler;
+    private BufferedReader clientInputStream;
+    private PrintWriter clientOutputStream;
+    private String exitWord;
 
-    public EchoServer(int portNumber, ServerMessageHandler serverMessageHandler, ServerSocket serverSocket, String exitWord) {
+    public EchoServer(int portNumber, MessageHandler messageHandler, ServerSocket serverSocket, String exitWord) {
         this.port = portNumber;
-        this.serverMessageHandler = serverMessageHandler;
+        this.messageHandler = messageHandler;
         this.serverSocket = serverSocket;
         this.exitWord = exitWord;
     }
@@ -19,38 +19,39 @@ public class EchoServer {
     public void listen() {
         try {
             Socket clientSocket = this.serverSocket.accept();
-            serverMessageHandler.confirmAcceptClientConnection();
-            clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            clientOut = new PrintWriter(clientSocket.getOutputStream(), true);
+            messageHandler.confirmAcceptClientConnection();
+            clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
             run();
         } catch (IOException ex) {
-            serverMessageHandler.printExceptionError(ex);
+            messageHandler.printExceptionError(ex);
         }
     }
 
-    public void run() {
+    private void run() {
         while (true) {
             String message = readInput();
             if (noMoreMessagesFromClient(message)) {
                 stop();
                 break;
             }
-            clientOut.println(response(message));
+            clientOutputStream.println(message);
         }
     }
 
     public void stop() {
         try {
-            serverMessageHandler.confirmCloseServer();
+
+            messageHandler.confirmCloseServer();
             this.serverSocket.close();
         } catch (IOException ex) {
-            serverMessageHandler.printExceptionError(ex);
+            messageHandler.printExceptionError(ex);
         }
     }
 
     private String readInput() {
         try {
-            return clientIn.readLine();
+            return clientInputStream.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,9 +59,5 @@ public class EchoServer {
 
     private boolean noMoreMessagesFromClient(String message) {
         return message.equalsIgnoreCase(this.exitWord) || message == null;
-    }
-
-    private String response(String incomingMessage) {
-        return incomingMessage;
     }
 }
