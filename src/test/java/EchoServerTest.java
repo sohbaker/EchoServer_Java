@@ -8,13 +8,14 @@ public class EchoServerTest {
     private FakeServerSocket fakeServerSocket;
     private MessageHandler messageHandler;
     private StringWriter outputStream = new StringWriter();
+    private String exitWord = "bye";
 
     @Before
     public void setUp() throws IOException {
         PrintWriter output = new PrintWriter(outputStream);
         messageHandler = new MessageHandler(output, port);
-        fakeServerSocket = new FakeServerSocket(port);
-        server = new EchoServer(port, messageHandler, fakeServerSocket);
+        fakeServerSocket = new FakeServerSocket();
+        server = new EchoServer(messageHandler, fakeServerSocket, exitWord);
     }
 
     @After
