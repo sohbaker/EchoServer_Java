@@ -38,17 +38,19 @@ public class EchoServer {
         }
     }
 
-    public String acceptRequestFromAClient(Socket clientSocket) {
-        String request = "";
+    private String readInput() {
         try {
-          request = new BufferedReader((new InputStreamReader(clientSocket.getInputStream()))).readLine();
-        } catch (Exception ex) {
-            output.println(ex);
+            return clientInputStream.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return request;
     }
 
-    public void stop() {
+    private boolean noMoreMessagesFromClient(String message) {
+        return message == null || message.equalsIgnoreCase(exitWord);
+    }
+
+    private void stop() {
         try {
             clientInputStream.close();
             clientOutputStream.close();
@@ -59,17 +61,5 @@ public class EchoServer {
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
-    }
-
-    private String readInput() {
-        try {
-            return clientInputStream.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean noMoreMessagesFromClient(String message) {
-        return message.equalsIgnoreCase(exitWord) || message == null;
     }
 }

@@ -1,20 +1,21 @@
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 public class FakeServerSocket extends ServerSocket {
-    private boolean acceptHasBeenCalled = false;
+    private Socket fakeClientSocket;
+    private boolean wasAcceptCalled = false;
 
-    FakeServerSocket() throws IOException {
+    FakeServerSocket(Socket fakeClientSocket) throws IOException {
+        this.fakeClientSocket = fakeClientSocket;
     }
 
     @Override
     public Socket accept() {
-        this.acceptHasBeenCalled = true;
-        return new FakeClientSocket();
+        this.wasAcceptCalled = true;
+        return fakeClientSocket;
     }
 
     public boolean wasAcceptCalled() {
-        return this.acceptHasBeenCalled;
+        return this.wasAcceptCalled;
     }
 }
