@@ -5,7 +5,7 @@ import java.net.Socket;
 public class FakeServerSocket extends ServerSocket {
     private boolean acceptHasBeenCalled = false;
 
-    FakeServerSocket(int port) throws IOException {
+    FakeServerSocket() throws IOException {
     }
 
     @Override
