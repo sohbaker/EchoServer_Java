@@ -2,15 +2,14 @@ import java.io.*;
 import java.net.*;
 
 public class EchoServer {
-    private int port;
-    private ServerSocket serverSocket;
     private MessageHandler messageHandler;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
     private BufferedReader clientInputStream;
     private PrintWriter clientOutputStream;
     private String exitWord;
 
-    public EchoServer(int portNumber, MessageHandler messageHandler, ServerSocket serverSocket, String exitWord) {
-        this.port = portNumber;
+    public EchoServer(MessageHandler messageHandler, ServerSocket serverSocket, String exitWord) {
         this.messageHandler = messageHandler;
         this.serverSocket = serverSocket;
         this.exitWord = exitWord;
@@ -18,7 +17,7 @@ public class EchoServer {
 
     public void listen() {
         try {
-            Socket clientSocket = this.serverSocket.accept();
+            clientSocket = serverSocket.accept();
             messageHandler.confirmAcceptClientConnection();
             clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -51,9 +50,12 @@ public class EchoServer {
 
     public void stop() {
         try {
-
+            clientInputStream.close();
+            clientOutputStream.close();
+            clientSocket.close();
+            messageHandler.confirmCloseClientConnection();
             messageHandler.confirmCloseServer();
-            this.serverSocket.close();
+            serverSocket.close();
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
@@ -68,6 +70,6 @@ public class EchoServer {
     }
 
     private boolean noMoreMessagesFromClient(String message) {
-        return message.equalsIgnoreCase(this.exitWord) || message == null;
+        return message.equalsIgnoreCase(exitWord) || message == null;
     }
 }
