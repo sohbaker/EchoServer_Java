@@ -1,5 +1,4 @@
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class MessageHandler {
     private PrintWriter output;
@@ -12,16 +11,12 @@ public class MessageHandler {
         output.println("--Server started on port: " + port + "--");
     }
 
-    public void confirmAcceptClientConnection() {
-        output.println("--Accepted connection--");
+    public void confirmAcceptClientConnection(int id) {
+        output.println("--Accepted new connection: " + id + "--");
     }
 
-    public void confirmCloseClientConnection() {
-        output.println("--Closing connection with client--");
-    }
-
-    public void confirmCloseServer() {
-        output.println("--Closing down server--");
+    public void confirmCloseClientConnection(int id) {
+        output.println("--Closing connection with client: " + id + "--");
     }
 
     public void printExceptionError(IOException errorMessage) {
