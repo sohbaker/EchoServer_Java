@@ -1,20 +1,14 @@
 import org.junit.*;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.Executor;
-
-
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class EchoServerTest {
-    private PrintWriter serverOutput = new PrintWriter(new StringWriter());
-    private MessageHandler messageHandler = new MessageHandler(serverOutput);
-    private String exitWord = "bye";
     private EchoClient echoClient = new EchoClient();
+    private MessageHandler messageHandler = new MessageHandler(new PrintWriter(new StringWriter()));
     private Executor executor = new SynchronousExecutor();
 
     @Test
@@ -30,7 +24,7 @@ public class EchoServerTest {
         List<Socket> multipleFakeClients = new ArrayList<>(Arrays.asList(clientOne, clientTwo, clientThree));
 
         ServerSocket fakeServerSocket = new FakeServerSocket(multipleFakeClients);
-        EchoServer server = new EchoServer(messageHandler, fakeServerSocket, exitWord, executor);
+        EchoServer server = new EchoServer(fakeServerSocket, messageHandler, executor, "bye");
 
         server.listenForConnections();
         server.listenForConnections();
@@ -39,6 +33,5 @@ public class EchoServerTest {
         assertThat(clientOne.getOutputStream().toString(), containsString(expectedOutputOne));
         assertThat(clientTwo.getOutputStream().toString(), containsString(expectedOutputTwo));
         assertThat(clientThree.getOutputStream().toString(), containsString(expectedOutputThree));
-
     }
 }
