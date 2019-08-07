@@ -12,12 +12,11 @@ public class ClientHandlerTest {
     @Before
     public void setUpHandler() {
         PrintWriter serverOutput = new PrintWriter(new StringWriter());
-        MessageHandler messageHandler = new MessageHandler(serverOutput, 2000);
+        MessageHandler messageHandler = new MessageHandler(serverOutput);
         String exitWord = "bye";
         Socket fakeClientSocket = new FakeClientSocket(inputStream, outputStream);
         clientHandler = new ClientHandler(fakeClientSocket, messageHandler, exitWord);
     }
-
 
     @Test
     public void receivesAnEchoResponse() {

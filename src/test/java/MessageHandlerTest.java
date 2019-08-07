@@ -4,19 +4,19 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class MessageHandlerTest {
-    private int port = 4321;
     private StringWriter outputStream = new StringWriter();
     private MessageHandler messageHandler;
 
     @Before
     public void createHandler() {
         PrintWriter output = new PrintWriter(outputStream);
-        messageHandler = new MessageHandler(output, port);
+        messageHandler = new MessageHandler(output);
     }
 
     @Test
     public void confirmsServerHasStartedOnGivenPort() {
-        messageHandler.confirmServerStarted();
+        int port = 1000;
+        messageHandler.confirmServerStarted(port);
         assertThat(outputStream.toString(), containsString("" + port));
     }
 

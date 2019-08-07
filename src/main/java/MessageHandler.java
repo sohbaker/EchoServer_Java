@@ -3,14 +3,12 @@ import java.io.PrintWriter;
 
 public class MessageHandler {
     private PrintWriter output;
-    private int port;
 
-    public MessageHandler(PrintWriter output, int port){
+    public MessageHandler(PrintWriter output){
         this.output = output;
-        this.port = port;
     }
 
-    public void confirmServerStarted() {
+    public void confirmServerStarted(int port) {
         output.println("--Server started on port: " + port + "--");
     }
 
