@@ -1,21 +1,16 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.*;
 
 public class FakeServerSocket extends ServerSocket {
-    private Socket fakeClientSocket;
-    private boolean wasAcceptCalled = false;
+    private LinkedList<Socket> fakeClientSockets;
 
-    FakeServerSocket(Socket fakeClientSocket) throws IOException {
-        this.fakeClientSocket = fakeClientSocket;
+    FakeServerSocket(List<Socket> fakeClientSockets) throws IOException {
+        this.fakeClientSockets = new LinkedList<>(fakeClientSockets);
     }
 
     @Override
     public Socket accept() {
-        this.wasAcceptCalled = true;
-        return fakeClientSocket;
-    }
-
-    public boolean wasAcceptCalled() {
-        return this.wasAcceptCalled;
+        return fakeClientSockets.pollFirst();
     }
 }

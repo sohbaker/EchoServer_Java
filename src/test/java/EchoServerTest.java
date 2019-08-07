@@ -1,47 +1,44 @@
 import org.junit.*;
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.*;
+import java.util.concurrent.Executor;
+
+
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class EchoServerTest {
-    private EchoServer server;
-    private MessageHandler messageHandler;
-    private String fakeInput = "hello";
-    private ByteArrayInputStream clientInputStream = new ByteArrayInputStream((fakeInput).getBytes());
-    private ByteArrayOutputStream clientOutputStream = new ByteArrayOutputStream();
+    private PrintWriter serverOutput = new PrintWriter(new StringWriter());
+    private MessageHandler messageHandler = new MessageHandler(serverOutput);
     private String exitWord = "bye";
-    private FakeServerSocket fakeServerSocket;
-
-    @Before
-    public void setUp() throws IOException {
-        int port = 3000;
-        PrintWriter serverOutput = new PrintWriter(new StringWriter());
-        messageHandler = new MessageHandler(serverOutput, port);
-        FakeClientSocket fakeClientSocket = new FakeClientSocket(clientInputStream, clientOutputStream);
-        fakeServerSocket = new FakeServerSocket(fakeClientSocket);
-        server = new EchoServer(messageHandler, fakeServerSocket, exitWord);
-    }
+    private EchoClient echoClient = new EchoClient();
+    private Executor executor = new SynchronousExecutor();
 
     @Test
-    public void openServerSocketAcceptsAConnection() {
-        server.listenForConnections();
-        assertTrue(fakeServerSocket.wasAcceptCalled());
-    }
+    public void echoesInputForMultipleClients() throws IOException {
+        String expectedOutputOne = "Client One says hello";
+        String expectedOutputTwo = "Client Two says hello";
+        String expectedOutputThree = "Client Three says hello";
 
-    @Test
-    public void echoesAMessageFromTheClientBackToTheClient() {
-        server.listenForConnections();
-        assertThat(clientOutputStream.toString(), containsString("hello"));
-    }
+        Socket clientOne = echoClient.createWithInput(expectedOutputOne);
+        Socket clientTwo = echoClient.createWithInput(expectedOutputTwo);
+        Socket clientThree = echoClient.createWithInput(expectedOutputThree);
 
-    @Test
-    public void socketClosesWhenClientEntersExitWord() throws IOException {
-        ByteArrayInputStream clientInput = new ByteArrayInputStream(("hello\nbye").getBytes());
-        FakeClientSocket fakeClientSocket = new FakeClientSocket(clientInput, clientOutputStream);
-        FakeServerSocket fakeServerSocket = new FakeServerSocket(fakeClientSocket);
-        server = new EchoServer(messageHandler, fakeServerSocket, exitWord);
+        List<Socket> multipleFakeClients = new ArrayList<>(Arrays.asList(clientOne, clientTwo, clientThree));
+
+        ServerSocket fakeServerSocket = new FakeServerSocket(multipleFakeClients);
+        EchoServer server = new EchoServer(messageHandler, fakeServerSocket, exitWord, executor);
 
         server.listenForConnections();
-        assertTrue(fakeServerSocket.isClosed());
+        server.listenForConnections();
+        server.listenForConnections();
+
+        assertThat(clientOne.getOutputStream().toString(), containsString(expectedOutputOne));
+        assertThat(clientTwo.getOutputStream().toString(), containsString(expectedOutputTwo));
+        assertThat(clientThree.getOutputStream().toString(), containsString(expectedOutputThree));
+
     }
 }
