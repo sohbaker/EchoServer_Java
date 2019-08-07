@@ -6,7 +6,6 @@ public class EchoServer {
     private Executor executor = Executors.newCachedThreadPool();
     private MessageHandler messageHandler;
     private ServerSocket serverSocket;
-    private Socket clientSocket;
     private String exitWord;
 
     public EchoServer(MessageHandler messageHandler, ServerSocket serverSocket, String exitWord) {
@@ -15,14 +14,18 @@ public class EchoServer {
         this.exitWord = exitWord;
     }
 
-    public void listenForConnections() {
+    public void start() {
         while (true) {
-            try {
-                clientSocket = serverSocket.accept();
-                executor.execute(new ClientHandler(clientSocket, messageHandler, exitWord));
-            } catch (IOException ex) {
-                messageHandler.printExceptionError(ex);
-            }
+            listenForConnections();
+        }
+    }
+
+    public void listenForConnections() {
+        try {
+            Socket clientSocket = serverSocket.accept();
+            executor.execute(new ClientHandler(clientSocket, messageHandler, exitWord));
+        } catch (IOException ex) {
+            messageHandler.printExceptionError(ex);
         }
     }
 }

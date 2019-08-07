@@ -10,6 +10,6 @@ public class Main {
         messageHandler.confirmServerStarted(port);
 
         EchoServer echoServer = new EchoServer(messageHandler, server, exitWord);
-        echoServer.listenForConnections();
+        echoServer.start();
     }
 }
