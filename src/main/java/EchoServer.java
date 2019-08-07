@@ -3,28 +3,28 @@ import java.net.*;
 import java.util.concurrent.*;
 
 public class EchoServer {
-    private Executor executor;
-    private MessageHandler messageHandler;
     private ServerSocket serverSocket;
+    private MessageHandler messageHandler;
+    private Executor executor;
     private String exitWord;
+    private int clientId = 0;
 
-    public EchoServer(MessageHandler messageHandler, ServerSocket serverSocket, String exitWord, Executor executor) {
-        this.messageHandler = messageHandler;
+    public EchoServer(ServerSocket serverSocket, MessageHandler messageHandler, Executor executor, String exitWord) {
         this.serverSocket = serverSocket;
-        this.exitWord = exitWord;
+        this.messageHandler = messageHandler;
         this.executor = executor;
+        this.exitWord = exitWord;
     }
 
     public void start() {
-        while (true) {
-            listenForConnections();
-        }
+        while (true) listenForConnections();
     }
 
     public void listenForConnections() {
         try {
             Socket clientSocket = serverSocket.accept();
-            executor.execute(new ClientHandler(clientSocket, messageHandler, exitWord));
+            clientId++;
+            executor.execute(new ClientHandler(clientSocket, messageHandler, exitWord, clientId));
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
