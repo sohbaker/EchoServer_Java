@@ -8,4 +8,3 @@ public class EchoClient {
         return new FakeClientSocket(inputStream, outputStream);
     }
 }
-q
