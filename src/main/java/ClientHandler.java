@@ -7,11 +7,13 @@ public class ClientHandler implements Runnable {
     private BufferedReader clientInputStream;
     private PrintWriter clientOutputStream;
     private String exitWord;
+    private int id;
 
-    public ClientHandler(Socket clientSocket, MessageHandler messageHandler, String exitWord) {
+    public ClientHandler(Socket clientSocket, MessageHandler messageHandler, String exitWord, int id) {
         this.clientSocket = clientSocket;
         this.messageHandler = messageHandler;
         this.exitWord = exitWord;
+        this.id = id;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class ClientHandler implements Runnable {
         try {
             clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
-            messageHandler.confirmAcceptClientConnection();
+            messageHandler.confirmAcceptClientConnection(id);
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
         }
@@ -37,7 +39,7 @@ public class ClientHandler implements Runnable {
                 closeClient();
                 break;
             }
-            clientOutputStream.println(">> " + inputLine);
+            clientOutputStream.println("[[echo]] " + inputLine);
         }
     }
 
@@ -57,7 +59,7 @@ public class ClientHandler implements Runnable {
         try {
             clientInputStream.close();
             clientOutputStream.close();
-            messageHandler.confirmCloseClientConnection();
+            messageHandler.confirmCloseClientConnection(id);
             clientSocket.close();
         } catch (IOException ex) {
             messageHandler.printExceptionError(ex);
