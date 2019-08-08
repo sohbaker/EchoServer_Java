@@ -19,7 +19,7 @@ public class MessageHandler {
         output.println("--Closing connection with client: " + id + "--");
     }
 
-    public void printExceptionError(IOException errorMessage) {
+    public void printIOExceptionError(IOException errorMessage) {
         output.println(errorMessage);
     }
 }

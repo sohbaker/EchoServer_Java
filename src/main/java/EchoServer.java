@@ -26,7 +26,7 @@ public class EchoServer {
             clientId++;
             executor.execute(new ClientHandler(clientSocket, messageHandler, exitWord, clientId));
         } catch (IOException ex) {
-            messageHandler.printExceptionError(ex);
+            messageHandler.printIOExceptionError(ex);
         }
     }
 }
