@@ -1,5 +1,6 @@
 import org.junit.*;
 import java.io.*;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
@@ -37,7 +38,7 @@ public class MessageHandlerTest {
     public void printsIOExceptionErrors() {
         String exceptionMessage = "exception thrown";
         IOException ioException = new IOException(exceptionMessage);
-        messageHandler.printExceptionError(ioException);
+        messageHandler.printIOExceptionError(ioException);
         assertThat(outputStream.toString(), containsString(exceptionMessage));
     }
 }

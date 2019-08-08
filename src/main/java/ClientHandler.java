@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable {
             clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
             messageHandler.confirmAcceptClientConnection(id);
         } catch (IOException ex) {
-            messageHandler.printExceptionError(ex);
+            messageHandler.printIOExceptionError(ex);
         }
     }
 
@@ -62,7 +62,7 @@ public class ClientHandler implements Runnable {
             messageHandler.confirmCloseClientConnection(id);
             clientSocket.close();
         } catch (IOException ex) {
-            messageHandler.printExceptionError(ex);
+            messageHandler.printIOExceptionError(ex);
         }
     }
 }
