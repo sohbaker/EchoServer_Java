@@ -16,29 +16,33 @@ public class MessageHandlerTest {
     }
 
     @Test
-    public void confirmsServerHasStartedOnGivenPort() {
+    public void declaresServerHasStartedOnGivenPort() {
         int port = 1000;
-        messageHandler.confirmServerStarted(port);
+        messageHandler.declareServerHasStarted(port);
+
         assertThat(outputStream.toString(), containsString("" + port));
     }
 
     @Test
-    public void confirmsClientConnectionIsAccepted() {
-        messageHandler.confirmAcceptClientConnection(clientId);
-        assertThat(outputStream.toString(), containsString("1"));
+    public void declaresClientConnectionIsAccepted() {
+        messageHandler.declareAcceptedClientConnection(clientId);
+
+        assertThat(outputStream.toString(), containsString(Integer.toString(clientId)));
     }
 
     @Test
-    public void confirmsConnectionWithClientIsClosed() {
-        messageHandler.confirmCloseClientConnection(clientId);
-        assertThat(outputStream.toString(), containsString("1"));
+    public void declaresConnectionWithClientIsClosed() {
+        messageHandler.declareClosingClientConnection(clientId);
+
+        assertThat(outputStream.toString(), containsString(Integer.toString(clientId)));
     }
 
     @Test
-    public void printsIOExceptionErrors() {
+    public void showsIOExceptionErrors() {
         String exceptionMessage = "exception thrown";
         IOException ioException = new IOException(exceptionMessage);
-        messageHandler.printIOExceptionError(ioException);
+        messageHandler.showIOException(ioException);
+
         assertThat(outputStream.toString(), containsString(exceptionMessage));
     }
 }
