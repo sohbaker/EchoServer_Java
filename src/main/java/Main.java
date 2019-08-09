@@ -3,17 +3,24 @@ import java.net.ServerSocket;
 import java.util.concurrent.*;
 
 public class Main {
+    private static int port;
+
     public static void main(String[] args) throws IOException {
-        int port = Integer.parseInt(args[0]);
-        String exitWord = args[1];
-
+        getPort(args);
         ServerSocket server = new ServerSocket(port);
-        MessageHandler messageHandler = new MessageHandler(new PrintWriter(System.out, true));
+        Messages messages = new Messages(new PrintWriter(System.out, true));
+        messages.declareServerHasStarted(port);
         Executor executor = Executors.newCachedThreadPool();
+        EchoServer echoServer = new EchoServer(server, messages, executor);
 
-        messageHandler.confirmServerStarted(port);
-
-        EchoServer echoServer = new EchoServer(server, messageHandler, executor, exitWord);
         echoServer.start();
+    }
+
+    private static void getPort(String... args) {
+        if (args.length == 1) {
+            port = Integer.parseInt(args[0]);
+        } else {
+            port = 80;
+        }
     }
 }

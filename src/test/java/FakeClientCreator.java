@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 
-public class EchoClient {
+public class FakeClientCreator {
     public Socket createWithInput(String fakeInput) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream((fakeInput).getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

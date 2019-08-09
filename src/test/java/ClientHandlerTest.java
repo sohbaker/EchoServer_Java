@@ -6,19 +6,19 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class ClientHandlerTest {
-    private ByteArrayInputStream inputStream = new ByteArrayInputStream(("testing 123").getBytes());
+    private String fakeInput = "testing 123";
+    private ByteArrayInputStream inputStream = new ByteArrayInputStream((fakeInput).getBytes());
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     @Test
     public void receivesAnEchoResponse() {
         PrintWriter serverOutput = new PrintWriter(new StringWriter());
-        MessageHandler messageHandler = new MessageHandler(serverOutput);
+        Messages messages = new Messages(serverOutput);
         Socket fakeClientSocket = new FakeClientSocket(inputStream, outputStream);
-        String exitWord = "bye";
-        int clientId = 1;
-        Runnable clientHandler = new ClientHandler(fakeClientSocket, messageHandler, exitWord, clientId);
+        Runnable clientHandler = new ClientHandler(fakeClientSocket, messages, 1);
 
         clientHandler.run();
-        assertThat(outputStream.toString(), containsString("testing 123"));
+
+        assertThat(outputStream.toString(), containsString(fakeInput));
     }
 }

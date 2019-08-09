@@ -8,31 +8,27 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class EchoServerTest {
-    private EchoClient echoClient = new EchoClient();
-    private MessageHandler messageHandler = new MessageHandler(new PrintWriter(new StringWriter()));
+    private FakeClientCreator fakeClientCreator = new FakeClientCreator();
+    private Messages messages = new Messages(new PrintWriter(new StringWriter()));
     private Executor executor = new SynchronousExecutor();
 
     @Test
     public void echoesInputForMultipleClients() throws IOException {
         String expectedOutputOne = "Client One says hello";
         String expectedOutputTwo = "Client Two says hello";
-        String expectedOutputThree = "Client Three says hello";
 
-        Socket clientOne = echoClient.createWithInput(expectedOutputOne);
-        Socket clientTwo = echoClient.createWithInput(expectedOutputTwo);
-        Socket clientThree = echoClient.createWithInput(expectedOutputThree);
+        Socket clientOne = fakeClientCreator.createWithInput(expectedOutputOne);
+        Socket clientTwo = fakeClientCreator.createWithInput(expectedOutputTwo);
 
-        List<Socket> multipleFakeClients = new ArrayList<>(Arrays.asList(clientOne, clientTwo, clientThree));
+        LinkedList<Socket> multipleFakeClients = new LinkedList<>(Arrays.asList(clientOne, clientTwo));
 
         ServerSocket fakeServerSocket = new FakeServerSocket(multipleFakeClients);
-        EchoServer server = new EchoServer(fakeServerSocket, messageHandler, executor, "bye");
+        EchoServer server = new EchoServer(fakeServerSocket, messages, executor);
 
-        server.listenForConnections();
         server.listenForConnections();
         server.listenForConnections();
 
         assertThat(clientOne.getOutputStream().toString(), containsString(expectedOutputOne));
         assertThat(clientTwo.getOutputStream().toString(), containsString(expectedOutputTwo));
-        assertThat(clientThree.getOutputStream().toString(), containsString(expectedOutputThree));
     }
 }
