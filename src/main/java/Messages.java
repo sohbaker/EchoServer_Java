@@ -1,9 +1,9 @@
 import java.io.*;
 
-public class MessageHandler {
+public class Messages {
     private PrintWriter output;
 
-    public MessageHandler(PrintWriter output){
+    public Messages(PrintWriter output){
         this.output = output;
     }
 
