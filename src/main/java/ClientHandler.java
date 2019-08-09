@@ -3,17 +3,16 @@ import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
-    private MessageHandler messageHandler;
+    private Messages serverMessages;
     private BufferedReader clientInputStream;
     private PrintWriter clientOutputStream;
-    private String exitWord;
-    private int id;
+    private int clientId;
+    private boolean keepRunning = true;
 
-    public ClientHandler(Socket clientSocket, MessageHandler messageHandler, String exitWord, int id) {
+    public ClientHandler(Socket clientSocket, Messages messages, int clientId) {
         this.clientSocket = clientSocket;
-        this.messageHandler = messageHandler;
-        this.exitWord = exitWord;
-        this.id = id;
+        this.serverMessages = messages;
+        this.clientId = clientId;
     }
 
     @Override
@@ -26,21 +25,22 @@ public class ClientHandler implements Runnable {
         try {
             clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             clientOutputStream = new PrintWriter(clientSocket.getOutputStream(), true);
-            messageHandler.confirmAcceptClientConnection(id);
+            serverMessages.declareAcceptedClientConnection(clientId);
         } catch (IOException ex) {
-            messageHandler.printIOExceptionError(ex);
+            serverMessages.showIOException(ex);
         }
     }
 
     private void communicate() {
-        while (true) {
+        while (keepRunning) {
             String inputLine = receiveData();
             if (noMoreData(inputLine)) {
-                closeClient();
+                keepRunning = false;
                 break;
             }
             clientOutputStream.println("[[echo]] " + inputLine);
         }
+        closeClient();
     }
 
     private String receiveData() {
@@ -52,17 +52,17 @@ public class ClientHandler implements Runnable {
     }
 
     private boolean noMoreData(String message) {
-        return message == null || message.equalsIgnoreCase(exitWord);
+        return message == null || message.equalsIgnoreCase("exit");
     }
 
     private void closeClient() {
         try {
             clientInputStream.close();
             clientOutputStream.close();
-            messageHandler.confirmCloseClientConnection(id);
+            serverMessages.declareClosingClientConnection(clientId);
             clientSocket.close();
         } catch (IOException ex) {
-            messageHandler.printIOExceptionError(ex);
+            serverMessages.showIOException(ex);
         }
     }
 }
