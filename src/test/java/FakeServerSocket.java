@@ -5,8 +5,8 @@ import java.util.*;
 public class FakeServerSocket extends ServerSocket {
     private LinkedList<Socket> fakeClientSockets;
 
-    FakeServerSocket(List<Socket> fakeClientSockets) throws IOException {
-        this.fakeClientSockets = new LinkedList<>(fakeClientSockets);
+    FakeServerSocket(LinkedList<Socket> fakeClientSockets) throws IOException {
+        this.fakeClientSockets = fakeClientSockets;
     }
 
     @Override
